@@ -1,0 +1,22 @@
+{
+  "title": "onoc-fcnn-allocation: simulator for collective-aware core allocation on a ring optical network-on-chip",
+  "description": "<p>Simulator, independent reference implementations, experiment drivers, profiler traces and result data for the paper <i>Collective-Aware Core Allocation for Fully Connected Neural Network Training on a Ring Optical Network-on-Chip</i>. It regenerates every table, figure and quoted number of the paper from the included result files, and includes the physically constrained, Hummingbird-style clustered network in which every optical transmission stays within an 8 dB power split.</p>",
+  "upload_type": "software",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Dai, Fei",
+      "affiliation": "Eastern Institute of Technology, Napier, New Zealand"
+    }
+  ],
+  "keywords": [
+    "optical network-on-chip",
+    "silicon photonics",
+    "neural network training",
+    "collective communication",
+    "core allocation",
+    "wavelength division multiplexing",
+    "reproducibility"
+  ],
+  "access_right": "open"
+}
