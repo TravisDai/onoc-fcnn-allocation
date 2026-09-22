@@ -133,9 +133,10 @@ log next to its CSV in <code>results/</code>.</p>
     <tr><td><code>python make_tables.py</code></td><td><code>paper/generated/*.tex</code> and <code>paper/figs/fig_*.pdf</code></td><td>20 s</td></tr>
   </tbody>
 </table>
-<p><code>run_all.sh</code> runs the first five in order. To rebuild the manuscript afterwards:</p>
-<pre><code>cd paper
-pdflatex FGCS_2026 &amp;&amp; bibtex FGCS_2026 &amp;&amp; pdflatex FGCS_2026 &amp;&amp; pdflatex FGCS_2026</code></pre>
+<p><code>run_all.sh</code> runs the first five in order. <code>make_tables.py</code> writes the
+tables and the macro file that the manuscript includes into <code>paper/generated/</code>, and the
+figures into <code>paper/figs/</code>. The manuscript source itself is not part of this repository
+while the paper is under review.</p>
 
 <h2>How the results reach the paper</h2>
 <p>Tables are written to <code>paper/generated/tab_*.tex</code> and included directly. Every number

@@ -71,7 +71,7 @@ closed at 40 Gb/s, which the shared-ring model does not.
 | `make_tables.py` | Turns the CSVs into `paper/generated/*.tex` and `paper/figs/fig_*.pdf`. |
 | `parse_traces.py`, `traces/compute_traces.csv` | Profiler traces of the C/GSL/BLAS implementation: per-core forward and backward kernel times for every network, period, batch size and core count, 100 to 300 repetitions each, compressed from 5.4 GB of logs. |
 | `test_*.py` | 23 tests: simulator against the reference, DP against brute force, the propositions by exhaustive check on small rings, the physical-layer constraints. |
-| `paper/` | LaTeX source, figures and the generated tables and macros. |
+| `paper/` | Figures, and the generated tables and macros that the manuscript includes. The manuscript source itself is not in this repository while the paper is under review. |
 
 ## Running the experiments
 
@@ -90,12 +90,9 @@ Times are for two cores of an Intel Core i5 3200 host with 32 GB of memory.
 
 `run_all.sh` runs the first five in order. Each experiment writes its log to `results/`.
 
-Then rebuild the paper itself:
-
-```bash
-cd paper
-pdflatex FGCS_2026 && bibtex FGCS_2026 && pdflatex FGCS_2026 && pdflatex FGCS_2026
-```
+`make_tables.py` writes the tables and the macro file that the manuscript includes into
+`paper/generated/`, and the figures into `paper/figs/`. The manuscript source is not part of this
+repository while the paper is under review.
 
 Figure 9 is drawn in TikZ; rebuild it with `pdflatex figs/src/hb_network.tex` and copy the PDF
 into `paper/figs/`.
