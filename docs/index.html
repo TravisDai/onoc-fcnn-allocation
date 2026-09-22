@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>onoc-fcnn-allocation</title>
+<meta name="description" content="How to reproduce the experiments of Collective-Aware Core Allocation for Fully Connected Neural Network Training on a Ring Optical Network-on-Chip.">
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1c1e; --muted: #5b6168; --line: #e3e6e9;
+    --code-bg: #f5f7f9; --accent: #1f5fa8; --accent-soft: #eaf1fa; --relay: #d9730d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a; --fg: #e8eaed; --muted: #a3abb3; --line: #2b3035;
+      --code-bg: #1c2024; --accent: #79aee8; --accent-soft: #1b2733; --relay: #e9964a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 16px 80px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 36px; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 10px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; margin: 44px 0 12px; letter-spacing: -0.01em; }
+  h3 { font-size: 1rem; margin: 28px 0 8px; }
+  p { margin: 0 0 14px; }
+  .lede { color: var(--muted); font-size: 1.05rem; margin-bottom: 18px; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.875em; }
+  code { background: var(--code-bg); padding: 0.12em 0.36em; border-radius: 4px; }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; overflow-x: auto; margin: 0 0 16px; line-height: 1.55;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 0 0 18px; font-size: 0.93rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  td code { white-space: nowrap; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .pills a {
+    display: inline-block; padding: 6px 12px; border: 1px solid var(--line);
+    border-radius: 999px; text-decoration: none; font-size: 0.88rem; background: var(--accent-soft);
+  }
+  .note {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 0 0 18px;
+  }
+  figure { margin: 22px 0; }
+  figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  figcaption { color: var(--muted); font-size: 0.87rem; margin-top: 8px; }
+  ol, ul { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  @media (max-width: 560px) {
+    .wrap { padding-top: 32px; }
+    h1 { font-size: 1.55rem; }
+    table { font-size: 0.86rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Collective-aware core allocation on a ring optical network-on-chip</h1>
+  <p class="lede">Simulator and reproduction artefact. Every table, figure and number in the
+  paper is generated from this repository.</p>
+  <ul class="pills">
+    <li><a href="https://github.com/TravisDai/onoc-fcnn-allocation">Repository</a></li>
+    <li><a href="#quick-start">Quick start</a></li>
+    <li><a href="#experiments">Run the experiments</a></li>
+    <li><a href="#validation">How it is validated</a></li>
+  </ul>
+</header>
+
+<h2>What the simulator models</h2>
+<p>A ring of cores joined by a multiple-writer multiple-reader optical network-on-chip. Each
+waveguide carries a number of wavelength channels; one transmission occupies a wavelength slot
+and can be received by any number of cores that tap the waveguide. On that ring the simulator
+runs one mini-batch training iteration of a fully connected network and answers two questions.</p>
+<ol>
+  <li><strong>How many cores should each layer own?</strong> More cores mean less computation per
+  core, but more sources competing for the same wavelength channels.</li>
+  <li><strong>Which backward collective?</strong> Reduce the partial errors (<strong>R</strong>),
+  or replicate the transposed weights and broadcast (<strong>T</strong>). T does more arithmetic
+  and uses more memory, but the optical ring carries a broadcast once.</li>
+</ol>
+<p>Section 6.8 of the paper rebuilds the network on a physically constrained organisation modelled
+on Hummingbird, a fabricated optical-broadcast processor: cluster hubs on a crossing-free ring,
+single-writer lanes tapped by the next six clusters, and a relay at every sixth cluster. Every
+transmission then stays within an 8 dB power split and closes its link budget at 40 Gb/s.</p>
+
+<figure>
+  <img src="fig-network.png" alt="Three panels: the ring of 64 cluster hubs folded onto an 8 by 8 grid; one hub with the lanes of the six preceding hubs tapped once each; one multicast unrolled along the ring with a relay at the sixth hub.">
+  <figcaption>The physically constrained network of Section 6.8. A multicast from hub <em>s</em>
+  reaches the next six hubs; the sixth regenerates the data and re-sends it on its own lane.</figcaption>
+</figure>
+
+<h2 id="quick-start">Quick start</h2>
+<pre><code>git clone https://github.com/TravisDai/onoc-fcnn-allocation.git
+cd onoc-fcnn-allocation
+pip install -r requirements.txt
+
+python -m pytest -q          # 23 tests, about 3 minutes
+python physhb.py             # physical-layer numbers of Section 3.6, instant
+python make_tables.py        # rebuild every table, figure and macro from results/</code></pre>
+<div class="note">
+  <p style="margin:0">The result CSVs are in the repository, so <code>make_tables.py</code>
+  rebuilds the paper's tables and figures without re-running a single experiment. Re-run the
+  experiments only if you want to regenerate the data itself.</p>
+</div>
+<p>Python 3.11 with numpy, pandas, matplotlib, numba and pytest. No GPU, no optical hardware and
+no network access. Everything runs on one machine.</p>
+
+<h2 id="experiments">Running the experiments</h2>
+<p>Times are for two cores of an Intel Core i5 3200 host with 32 GB of memory. Each run writes its
+log next to its CSV in <code>results/</code>.</p>
+<table>
+  <thead><tr><th>Command</th><th>Produces</th><th>Time</th></tr></thead>
+  <tbody>
+    <tr><td><code>python -m pytest -q</code></td><td>Correctness of everything below</td><td>3 min</td></tr>
+    <tr><td><code>python experiments.py main</code></td><td><code>results/main.csv</code>: six networks, four batch sizes, both collectives, both wavelength counts, three mapping families, four allocation methods</td><td>30 min</td></tr>
+    <tr><td><code>python experiments.py enoc</code></td><td><code>results/enoc.csv</code>: the electrical-mesh reference of Section 6.7</td><td>5 min</td></tr>
+    <tr><td><code>python experiments.py sens</code></td><td><code>results/sens.csv</code>: sensitivity to reconfiguration time, bit rate, core throughput, flit serialisation</td><td>5 min</td></tr>
+    <tr><td><code>python ring_size.py</code></td><td><code>results/ringsize.csv</code>: rings of 64, 256 and 1,000 cores</td><td>5 min</td></tr>
+    <tr><td><code>python experiments.py dp</code></td><td><code>results/dp.csv</code>: exact optima the coordinate search is measured against</td><td>2-3 h</td></tr>
+    <tr><td><code>./run_hb.sh</code></td><td><code>results/hb_*.csv</code>: the Hummingbird-style network, and the lane-count, lane-rate and cluster-count studies</td><td>12 min</td></tr>
+    <tr><td><code>python make_tables.py</code></td><td><code>paper/generated/*.tex</code> and <code>paper/figs/fig_*.pdf</code></td><td>20 s</td></tr>
+  </tbody>
+</table>
+<p><code>run_all.sh</code> runs the first five in order. To rebuild the manuscript afterwards:</p>
+<pre><code>cd paper
+pdflatex FGCS_2026 &amp;&amp; bibtex FGCS_2026 &amp;&amp; pdflatex FGCS_2026 &amp;&amp; pdflatex FGCS_2026</code></pre>
+
+<h2>How the results reach the paper</h2>
+<p>Tables are written to <code>paper/generated/tab_*.tex</code> and included directly. Every number
+quoted in the running text is a LaTeX macro in <code>paper/generated/results_macros.tex</code>, so a
+sentence such as "T is 1.3-5.2x faster than R" is written in the source as macros and cannot drift
+from the data. Nothing is typed by hand.</p>
+<table>
+  <thead><tr><th>Paper</th><th>Code</th></tr></thead>
+  <tbody>
+    <tr><td>Per-neuron FLOPs of R and T</td><td><code>onocsim.flops_per_neuron</code></td></tr>
+    <tr><td>Emitters, payloads and the slot service model</td><td><code>onocsim.transition</code></td></tr>
+    <tr><td>Network energy; SRAM by liveness; iteration time</td><td><code>onocsim.transition</code>, <code>sram_peak</code>, <code>evaluate</code></td></tr>
+    <tr><td>Loss of one transmission and the link budget</td><td><code>physhb.il_db</code>, <code>budget_db</code>, <code>f_max</code></td></tr>
+    <tr><td>Relaxed initialiser and the scaling corollary</td><td><code>onocsim.relaxed_init</code></td></tr>
+    <tr><td>Exact chain dynamic program</td><td><code>onocsim.pair_matrix</code>, <code>chain_dp</code></td></tr>
+    <tr><td>Mapping-family metrics</td><td><code>onocsim.schedule_metrics</code></td></tr>
+    <tr><td>Electrical mesh bound</td><td><code>refmodel.mesh_transition</code>, <code>mesh_eval</code></td></tr>
+    <tr><td>Transition with relays (Section 6.8)</td><td><code>hbsim.htransition</code></td></tr>
+  </tbody>
+</table>
+
+<h2 id="validation">How the model is validated</h2>
+<ul>
+  <li><strong>Two implementations.</strong> <code>refmodel.py</code> and <code>hbref.py</code>
+  implement the same equations with plain Python dictionaries and share no code with the numba
+  simulators. The tests check agreement on hundreds of random cases, including energy, SRAM and
+  schedule metrics.</li>
+  <li><strong>Exact optima.</strong> The chain dynamic program is checked against brute force on
+  small instances, and the coordinate search is measured against the dynamic program on the full
+  grid.</li>
+  <li><strong>The propositions</strong> are checked exhaustively on rings of 3 to 10 cores with 2
+  to 5 layers.</li>
+  <li><strong>The physical layer</strong> is checked constraint by constraint: every window used
+  closes the link budget, no split exceeds 8 dB, and every destination is covered within the
+  fan-out.</li>
+</ul>
+
+<h2>Computation model</h2>
+<p>The main results are trace-driven. <code>traces/compute_traces.csv</code> holds per-core forward
+and backward kernel times measured on a C implementation with GSL and BLAS, for every network,
+period, batch size and core count, 100 to 300 repetitions each, compressed from 5.4 GB of logs.
+Forward kernel times are used unchanged; because the profiled backward kernel forms the weight
+gradient, the extra products of R and T are charged at the efficiency measured at the same
+per-core load. The sensitivity study replaces the traces by an analytical model over a sixteenfold
+range of core throughput and reaches the same conclusions.</p>
+
+<h2>Parameters worth knowing</h2>
+<ul>
+  <li><code>D_cfg</code>, the microring reconfiguration time per slot, is the least certain
+  parameter: the base value is 10 ns and the paper sweeps it from 1 ns to 1 µs.</li>
+  <li>The 8 dB limit applies to the <em>splitting loss only</em>, which caps a transmission at six
+  receivers whatever the devices. The rest of the budget follows from the laser power and the
+  receiver sensitivity, −22.3 dBm OMA at 10 Gb/s scaled by 15 dB per decade of bit rate.</li>
+</ul>
+
+<footer>
+  <p>Fei (Travis) Dai, Eastern Institute of Technology, Napier, New Zealand.
+  Code released under the MIT licence. The manuscript is under review at Future Generation
+  Computer Systems.</p>
+</footer>
+
+</div>
+</body>
+</html>

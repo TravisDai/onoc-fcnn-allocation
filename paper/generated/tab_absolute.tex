@@ -1,0 +1,25 @@
+\begin{table*}[t]
+\centering
+\caption{Iteration time $T_{\mathrm{step}}$ in $\mu$s of the selected allocation (FM, coordinate search).}
+\label{tab:absolute}
+\small
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{@{}llrrrrrrrrrrrr@{}}
+\toprule
+ & & \multicolumn{2}{c}{NN1} & \multicolumn{2}{c}{NN2} & \multicolumn{2}{c}{NN3} & \multicolumn{2}{c}{NN4} & \multicolumn{2}{c}{NN5} & \multicolumn{2}{c}{NN6}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}\cmidrule(lr){11-12}\cmidrule(lr){13-14}
+$\lmax$ & $\mu$ & \Rc & \Tc & \Rc & \Tc & \Rc & \Tc & \Rc & \Tc & \Rc & \Tc & \Rc & \Tc\\
+\midrule
+8 & 1 & 77.1 & 47.2 & 200 & 94.7 & 335 & 131 & 525 & 172 & 388 & 138 & 1{,}027 & 307\\
+8 & 8 & 296 & 116 & 899 & 252 & 1{,}569 & 368 & 2{,}505 & 536 & 1{,}920 & 494 & 5{,}149 & 1{,}085\\
+8 & 16 & 524 & 187 & 1{,}680 & 443 & 2{,}904 & 636 & 4{,}695 & 931 & 3{,}632 & 910 & 9{,}767 & 2{,}028\\
+8 & 32 & 1{,}038 & 349 & 3{,}285 & 789 & 5{,}983 & 1{,}268 & 9{,}691 & 1{,}864 & 7{,}552 & 1{,}816 & 20{,}698 & 4{,}104\\
+\addlinespace[2pt]
+64 & 1 & 54.8 & 43.4 & 118 & 85.0 & 173 & 119 & 248 & 157 & 191 & 127 & 448 & 279\\
+64 & 8 & 170 & 110 & 443 & 235 & 705 & 343 & 1{,}088 & 502 & 932 & 466 & 2{,}241 & 1{,}016\\
+64 & 16 & 300 & 179 & 852 & 417 & 1{,}330 & 597 & 2{,}064 & 876 & 1{,}785 & 863 & 4{,}363 & 1{,}911\\
+64 & 32 & 575 & 334 & 1{,}638 & 746 & 2{,}641 & 1{,}203 & 4{,}218 & 1{,}771 & 3{,}682 & 1{,}729 & 9{,}140 & 3{,}891\\
+\addlinespace[2pt]
+\bottomrule
+\end{tabular}
+\end{table*}

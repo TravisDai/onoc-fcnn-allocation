@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{Lane rate at a fixed 40\,Gb/s per hub and direction (64 clusters; NN2, NN4, NN6; $\mu\in\{1,8,32\}$): receivers per transmission $F$ and the \Rc\ and \Tc\ iteration times relative to one 40\,Gb/s lane, for comb-class (0\,dBm) and DFB-class (8\,dBm) lanes, one wavelength per waveguide (SDM) or 16 per waveguide (WDM).}
+\label{tab:hbrate}
+\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}llrccrcc@{}}
+\toprule
+ & & \multicolumn{3}{c}{0\,dBm lanes} & \multicolumn{3}{c}{8\,dBm lanes}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+ & Lanes & $F$ & \Rc & \Tc & $F$ & \Rc & \Tc\\
+\midrule
+SDM & 4$\times$10\,Gb/s & 6 & 0.80--0.92 & 0.96--0.99 & 6 & 1.00 & 1.00\\
+ & 2$\times$20\,Gb/s & 6 & 0.80--0.91 & 0.96--0.99 & 6 & 1.00 & 1.00\\
+ & 1$\times$40\,Gb/s & 3 & 1.00 & 1.00 & 6 & 1.00 & 1.00\\
+\addlinespace[2pt]
+WDM & 4$\times$10\,Gb/s & 6 & 0.67--0.85 & 0.92--0.98 & 6 & 1.00 & 1.00\\
+ & 2$\times$20\,Gb/s & 6 & 0.67--0.85 & 0.92--0.97 & 6 & 1.00 & 1.00\\
+ & 1$\times$40\,Gb/s & 2 & 1.00 & 1.00 & 6 & 1.00 & 1.00\\
+\bottomrule
+\end{tabular}
+\end{table}

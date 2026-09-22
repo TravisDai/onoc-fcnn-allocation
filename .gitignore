@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+results/log_*.txt
+results/hb_done.txt
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.spl
+paper/*.pdf
+paper/figs/src/*.aux
+paper/figs/src/*.log
+paper/figs/src/*.pdf

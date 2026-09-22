@@ -1,0 +1,33 @@
+\begin{table*}[t]
+\centering
+\caption{Analytical electrical-mesh reference ($25\times40$ mesh, XY routing, 2 cycles per hop, allocation re-optimised for the mesh). Break-even link bit rate $B_e^{*}$ (Gb/s per link and direction; T\,=\,Tb/s) at which the mesh matches the ONoC's selected iteration time with $\lmax=64$, under ideal tree multicast and under unicast replication; $\infty$ means the mesh cannot match it at any link rate. The last two columns give the ratio of mesh to ONoC time at a 128-bit-per-cycle link (435\,Gb/s), each network using its better collective. Rows show $\mu=1$ and 32; ranges quoted in the text include all four batch sizes.}
+\label{tab:enoc}
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lr rr rr rr rr@{}}
+\toprule
+ & & \multicolumn{2}{c}{ONoC \Rc\ vs mesh \Rc} & \multicolumn{2}{c}{ONoC \Tc\ vs mesh \Tc} & \multicolumn{2}{c}{best vs best} & \multicolumn{2}{c}{$T_{\mathrm{mesh}}/T_{\mathrm{ONoC}}$ at 435\,Gb/s}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}
+Net & $\mu$ & tree & unicast & tree & unicast & tree & unicast & tree & unicast\\
+\midrule
+NN1 & 1 & 40.7 & 47.1 & 285 & 3\,T & 285 & 3\,T & 1.00 & 1.06\\
+ & 32 & 43 & 47.2 & 2\,T & $>$10\,T & 2\,T & $>$10\,T & 1.02 & 1.15\\
+\addlinespace[1pt]
+NN2 & 1 & 26.1 & 31 & 301 & 2.9\,T & 301 & 2.9\,T & 1.00 & 1.07\\
+ & 32 & 29.7 & 34.1 & 2\,T & $>$10\,T & 2\,T & $>$10\,T & 1.03 & 1.24\\
+\addlinespace[1pt]
+NN3 & 1 & 24.9 & 32.2 & 357 & 3.7\,T & 357 & 1.5\,T & 1.00 & 1.06\\
+ & 32 & 28.2 & 32.3 & 2.1\,T & $>$10\,T & 2.1\,T & 5.6\,T & 1.03 & 1.25\\
+\addlinespace[1pt]
+NN4 & 1 & 23.1 & 30.7 & 450 & 4.7\,T & 441 & 885 & 1.00 & 1.06\\
+ & 32 & 26.6 & 32.5 & 2.2\,T & $>$10\,T & 2.1\,T & 4.2\,T & 1.03 & 1.28\\
+\addlinespace[1pt]
+NN5 & 1 & 36.4 & 47.9 & 656 & 4.9\,T & 656 & 2.3\,T & 1.01 & 1.10\\
+ & 32 & 33.1 & 38.9 & 2.3\,T & $>$10\,T & 2.3\,T & $>$10\,T & 1.03 & 1.28\\
+\addlinespace[1pt]
+NN6 & 1 & 29.6 & 39 & 605 & 5.4\,T & 429 & 767 & 1.00 & 1.07\\
+ & 32 & 27.7 & 33.1 & 2.3\,T & $>$10\,T & 1.2\,T & 2.2\,T & 1.03 & 1.30\\
+\addlinespace[1pt]
+\bottomrule
+\end{tabular}
+\end{table*}

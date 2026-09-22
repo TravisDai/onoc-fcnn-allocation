@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Solver quality over 16 settings per network ($\mu\in\{1,8,16,32\}$, $\lmax\in\{8,64\}$, \Rc\ and \Tc). Gaps are relative to the exact FM optimum of the dynamic program (DP): rounded relaxed initialiser (RI) and coordinate search (CS); ``exact'' counts CS runs that reach the DP optimum.}
+\label{tab:solver}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{RI gap (\%)} & \multicolumn{2}{c}{CS gap (\%)} & CS & mean DP\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Net & mean & max & mean & max & exact & (s)\\
+\midrule
+NN1 & 3.10 & 11.83 & 0.000 & 0.000 & 16/16 & 5\\
+NN2 & 2.48 & 7.89 & 0.000 & 0.000 & 16/16 & 23\\
+NN3 & 2.81 & 9.52 & 0.000 & 0.000 & 16/16 & 35\\
+NN4 & 2.71 & 9.23 & 0.000 & 0.000 & 16/16 & 46\\
+NN5 & 2.39 & 10.48 & 0.000 & 0.000 & 16/16 & 24\\
+NN6 & 2.21 & 10.86 & 0.000 & 0.000 & 16/16 & 72\\
+\bottomrule
+\end{tabular}
+\end{table}

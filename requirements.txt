@@ -1,0 +1,6 @@
+# Tested with Python 3.11.15 and these versions; any recent release should work.
+numpy>=1.26
+pandas>=2.0
+matplotlib>=3.8
+numba>=0.59
+pytest>=7.4

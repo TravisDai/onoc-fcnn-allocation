@@ -1,0 +1,5 @@
+- Ownership-based model of FCNN training on a wavelength-slotted optical ring
+- Hummingbird-style optical broadcast keeps every split within 8 dB via relays
+- Exact dynamic program for fixed and round-robin mappings validates the search
+- Transpose-broadcast backpropagation is 1.3-5.2x faster than error reduction
+- Optical advantage over a wide-link mesh hinges on the backward collective

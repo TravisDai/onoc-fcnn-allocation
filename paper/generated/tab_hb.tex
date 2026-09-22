@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Hummingbird-style network (64 clusters $\times$ 16 cores, FM, $\mu=8$, 40\,Gb/s lanes, $F=6$): iteration time of the exact optimal allocation in $\mu$s with $k$ lanes per hub and direction, the largest increase over the same network without the fan-out limit, and the speed-up of \Tc\ over \Rc\ with one lane.}
+\label{tab:hb}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{$k=1$} & \multicolumn{2}{c}{$k=4$} & Limit & \Tc\ vs \Rc\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Net & \Rc & \Tc & \Rc & \Tc & cost (\%) & ($k=1$)\\
+\midrule
+NN1 & 144 & 113 & 122 & 110 & 12.8 & 1.28$\times$\\
+NN2 & 314 & 242 & 246 & 235 & 22.4 & 1.30$\times$\\
+NN3 & 455 & 354 & 354 & 343 & 24.0 & 1.28$\times$\\
+NN4 & 659 & 518 & 508 & 502 & 25.6 & 1.27$\times$\\
+NN5 & 595 & 480 & 492 & 467 & 15.8 & 1.24$\times$\\
+NN6 & 1{,}268 & 1{,}048 & 998 & 1{,}017 & 22.8 & 1.21$\times$\\
+\bottomrule
+\end{tabular}
+\end{table}
