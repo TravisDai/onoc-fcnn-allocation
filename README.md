@@ -1,4 +1,5 @@
 # onoc-fcnn-allocation
+[![DOI](https://zenodo.org/badge/1382142586.svg)](https://doi.org/10.5281/zenodo.22904099)
 
 Simulator and reproduction artefact for *Collective-Aware Core Allocation for Fully Connected
 Neural Network Training on a Ring Optical Network-on-Chip* (under review at Future Generation
@@ -154,16 +155,23 @@ B72 but contain batch-32 runs; the parser corrects them.
 
 ## Citation
 
+Cite the software by its concept DOI, which always resolves to the newest release:
+
 ```bibtex
-@misc{dai2026onocfcnn,
-  author = {Dai, Fei},
-  title  = {Collective-Aware Core Allocation for Fully Connected Neural Network Training
-            on a Ring Optical Network-on-Chip},
-  year   = {2026},
-  note   = {Manuscript under review},
-  howpublished = {\url{https://github.com/TravisDai/onoc-fcnn-allocation}}
+@misc{dai2026onocsim,
+  author    = {Dai, Fei},
+  title     = {onoc-fcnn-allocation: simulator for collective-aware core allocation
+               on a ring optical network-on-chip},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.22904099},
+  note      = {\url{https://github.com/TravisDai/onoc-fcnn-allocation}}
 }
 ```
+
+Release v1.0.1, the version the paper was built from, is archived at
+[10.5281/zenodo.22909487](https://doi.org/10.5281/zenodo.22909487).
+The paper it accompanies is under review at Future Generation Computer Systems.
 
 ## Licence
 
