@@ -13,8 +13,9 @@ Lanes are either
 
 Worst-case loss of one transmission reaching F receivers over H hops (dB):
   IL(F, H) = L_mod + L_oma + F*L_tap + 10*log10(F) + [L_drop + L_thr]_WDM + H*(alpha*d_hop + L_bend)
-where L_oma converts average power to optical modulation amplitude (OMA) for the extinction
-ratio, and L_thr is the off-resonance loss of the writer's other modulators (WDM only).
+where L_oma converts the modulator's "1" level to optical modulation amplitude (OMA) for the
+extinction ratio (L_mod is referenced to the "1" level, the conservative convention), and L_thr
+is the off-resonance loss of the writer's other modulators (WDM only).
 
 Two constraints:
   * splitting loss 10*log10(F) <= 8 dB (a device-independent limit; the split is the part of the
@@ -58,9 +59,10 @@ def sens_dbm(B: float, p: HBPhys = HBPhys()) -> float:
 
 
 def oma_db(p: HBPhys = HBPhys()) -> float:
-    """Average-to-OMA conversion: OMA = P_avg * 2 (r - 1) / (r + 1)."""
+    """Average-to-OMA conversion, in dB, with L_mod referenced to the "1" level: 10log10(r/(r-1))."""
     r = 10 ** (p.ER_db / 10)
-    return 10 * math.log10((r + 1) / (2 * (r - 1)))
+    return 10 * math.log10(r / (r - 1))
+
 
 
 def through_db(lam_wg: int, p: HBPhys = HBPhys()) -> float:

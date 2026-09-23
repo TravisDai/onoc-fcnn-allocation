@@ -10,7 +10,7 @@ from hbsim import HCfg, HModel, htransition
 def test_physical_layer():
     p = PH.HBPhys()
     assert PH.f_split(p) == 6                         # 10 log10 6 = 7.8 dB <= 8 dB < 10 log10 7
-    assert abs(PH.oma_db(p) - 10 * math.log10((10 ** 0.4 + 1) / (2 * (10 ** 0.4 - 1)))) < 1e-12
+    assert abs(PH.oma_db(p) - 10 * math.log10(10 ** 0.4 / (10 ** 0.4 - 1))) < 1e-12
     assert abs(PH.sens_dbm(25e9, p) - (-22.3 + 15 * math.log10(2.5))) < 1e-12
     # the fan-out shrinks with the lane rate at a fixed lane power, and is split-limited at high power
     F = [PH.f_max(B, 0.0, "SDM", 1, 2.5, p) for B in (10e9, 25e9, 40e9)]

@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Physically constrained clustered ring (64 hubs $\times$ 16 cores, FM, $\mu=8$): iteration time of the exact optimal allocation in $\mu$s for each collective and channel count $\Lambda$ per link, the largest increase over the same ring without physical constraints, and the largest reduction relative to the maximum allocation.}
+\label{tab:cluster}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\Rc} & \multicolumn{2}{c}{\Tc} & Budget & Alloc.\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Net & $\Lambda=8$ & 64 & 8 & 64 & cost (\%) & gain (\%)\\
+\midrule
+NN1 & 144 & 128 & 112 & 110 & 0.45 & 3.6\\
+NN2 & 329 & 257 & 241 & 234 & 0.59 & 1.9\\
+NN3 & 480 & 367 & 352 & 343 & 0.54 & 1.5\\
+NN4 & 693 & 525 & 514 & 502 & 0.46 & 1.2\\
+NN5 & 619 & 514 & 475 & 466 & 0.21 & 0.0\\
+NN6 & 1{,}344 & 1{,}033 & 1{,}037 & 1{,}016 & 0.27 & 0.0\\
+\bottomrule
+\end{tabular}
+\end{table}

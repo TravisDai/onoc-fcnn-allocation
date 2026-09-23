@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Effect of cluster size on the clustered ring (1,024 cores; NN2, NN4, NN6; $\mu\in\{1,8,32\}$; $\Lambda\in\{8,64\}$): largest insertion loss, longest relay chain, largest time cost of the physical limits, and largest reduction of the selected allocation relative to the maximum and best fixed allocations.}
+\label{tab:clsize}
+\footnotesize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Hubs & IL & Chain & Cost & \multicolumn{2}{c}{vs max (\%)} & \multicolumn{2}{c}{vs fixed (\%)}\\
+\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+$\times$ cores & (dB) & & (\%) & \Rc & \Tc & \Rc & \Tc\\
+\midrule
+256$\times$4 &7.92 & 64 & 16.5 & 37.0 & 3.1 & 16.4 & 3.1\\
+64$\times$16 &7.98 & 16 & 1.7 & 2.0 & 0.0 & 2.0 & 0.0\\
+16$\times$64 &7.52 & 4 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0\\
+\bottomrule
+\end{tabular}
+\end{table}
