@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-title: "onoc-fcnn-allocation: simulator for collective-aware core allocation on a ring ONoC"
-message: "If you use this software, please cite the paper it accompanies."
+title: "onoc-fcnn-allocation: simulator for collective-aware core allocation on a ring optical network-on-chip"
+message: "If you use this software, please cite it by its concept DOI, and cite the paper it accompanies."
 type: software
 authors:
   - given-names: Fei
@@ -8,7 +8,16 @@ authors:
     affiliation: "Eastern Institute of Technology, Napier, New Zealand"
 repository-code: "https://github.com/TravisDai/onoc-fcnn-allocation"
 license: MIT
+version: v1.0.1
 date-released: "2026-09-23"
+doi: 10.5281/zenodo.22904099
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22904099
+    description: "Concept DOI, resolves to the latest version"
+  - type: doi
+    value: 10.5281/zenodo.22909487
+    description: "Version DOI of v1.0.1, the version used in the paper"
 preferred-citation:
   type: unpublished
   title: "Collective-Aware Core Allocation for Fully Connected Neural Network Training on a Ring Optical Network-on-Chip"
