@@ -6,7 +6,8 @@ Neural Network Training on a Ring Optical Network-on-Chip* (under review at Futu
 Computer Systems).
 
 Everything the paper reports is generated from this repository: every table, every figure and
-every number quoted in the text. There are no hand-typed results.
+every number quoted in the text. The quoted numbers are checked against the regenerated data
+by `check_numbers.py`.
 
 The study asks two questions. How many cores should each layer of a fully connected network own
 on a wavelength-slotted optical ring, and which backward collective should be used: reduce the
@@ -24,6 +25,7 @@ pip install -r requirements.txt
 python -m pytest -q          # 23 tests, about 3 minutes
 python physhb.py             # physical-layer numbers of Section 3.6, instant
 python make_tables.py        # rebuild every table, figure and macro from results/
+python check_numbers.py      # confirm the numbers quoted in the paper match them
 ```
 
 `make_tables.py` works on the CSVs already in `results/`, so you can regenerate the paper's
@@ -72,6 +74,7 @@ and relays are assumed to pipeline perfectly (Section 7 of the paper lists the a
 | `experiments.py`, `ring_size.py` | Main experiment matrix; ring-size study. Write `results/*.csv`. |
 | `hb_experiments.py`, `run_hb.sh` | Section 6.8 experiments: `main`, `lanes`, `rate`, `clusters`, `dcfg`. Write `results/hb_*.csv`. |
 | `make_tables.py` | Turns the CSVs into `paper/generated/*.tex` and `paper/figs/fig_*.pdf`. |
+| `check_numbers.py`, `paper/numbers_in_text.tex` | The 182 results quoted in the manuscript's text, and a check that each still matches the regenerated macros. |
 | `parse_traces.py`, `traces/compute_traces.csv` | Profiler traces of the C/GSL/BLAS implementation: per-core forward and backward kernel times for every network, period, batch size and core count, 100 to 300 repetitions each, compressed from 5.4 GB of logs. |
 | `test_*.py` | 23 tests: simulator against the reference, DP against brute force, the propositions by exhaustive check on small rings, the physical-layer constraints. |
 | `paper/` | Figures, and the generated tables and macros that the manuscript includes. The manuscript source itself is not in this repository while the paper is under review. |
@@ -104,9 +107,11 @@ panels (b)-(d) show the modelled extension. Rebuild it with
 ## How the results reach the paper
 
 `make_tables.py` writes two kinds of output. Tables go to `paper/generated/tab_*.tex`, which the
-manuscript includes directly. Every number quoted in the running text is a LaTeX macro in
-`paper/generated/results_macros.tex`, so a sentence such as "T is 1.3-5.2x faster than R" is
-written in the source as macros and cannot drift from the data.
+manuscript includes directly. Every number quoted in the running text is generated as a LaTeX
+macro in `paper/generated/results_macros.tex`, for example `\TRspeedMin` and `\TRspeedMax` for
+"T is 1.3-5.2x faster than R". The manuscript states these values as plain numbers;
+`paper/numbers_in_text.tex` records the 182 values it quotes, and `check_numbers.py` reports any
+that no longer match a fresh `results_macros.tex`.
 
 | Paper | Code |
 |---|---|

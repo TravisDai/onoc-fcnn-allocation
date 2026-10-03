@@ -145,9 +145,10 @@ while the paper is under review.</p>
 
 <h2>How the results reach the paper</h2>
 <p>Tables are written to <code>paper/generated/tab_*.tex</code> and included directly. Every number
-quoted in the running text is a LaTeX macro in <code>paper/generated/results_macros.tex</code>, so a
-sentence such as "T is 1.3-5.2x faster than R" is written in the source as macros and cannot drift
-from the data. Nothing is typed by hand.</p>
+quoted in the running text is generated as a LaTeX macro in
+<code>paper/generated/results_macros.tex</code>. The manuscript states these values as plain
+numbers; <code>paper/numbers_in_text.tex</code> records the 182 values it quotes, and
+<code>python check_numbers.py</code> reports any that no longer match the regenerated data.</p>
 <table>
   <thead><tr><th>Paper</th><th>Code</th></tr></thead>
   <tbody>
