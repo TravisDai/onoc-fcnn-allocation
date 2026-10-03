@@ -75,6 +75,7 @@
     <li><a href="#quick-start">Quick start</a></li>
     <li><a href="#experiments">Run the experiments</a></li>
     <li><a href="#validation">How it is validated</a></li>
+    <li><a href="#citation">Citation</a></li>
   </ul>
 </header>
 
@@ -90,15 +91,19 @@ runs one mini-batch training iteration of a fully connected network and answers 
   or replicate the transposed weights and broadcast (<strong>T</strong>). T does more arithmetic
   and uses more memory, but the optical ring carries a broadcast once.</li>
 </ol>
-<p>Section 6.8 of the paper rebuilds the network on a physically constrained organisation modelled
-on Hummingbird, a fabricated optical-broadcast processor: cluster hubs on a crossing-free ring,
-single-writer lanes tapped by the next six clusters, and a relay at every sixth cluster. Every
-transmission then stays within an 8 dB power split and closes its link budget at 40 Gb/s.</p>
+<p>Section 6.8 of the paper evaluates a clustered organisation inspired by Hummingbird, a
+fabricated optical-broadcast processor: cluster hubs on a crossing-free ring, single-writer lanes
+tapped by the next six clusters, and a relay at every sixth cluster. Every modelled transmission
+then stays within an 8 dB splitting cap and closes its link budget at 40 Gb/s. These are model
+results under stated assumptions (receiver sensitivity extrapolated from one measurement, upstream
+laser coupling loss excluded, ideal relay pipelining), not hardware measurements.</p>
 
 <figure>
-  <img src="fig-network.png" alt="Three panels: the ring of 64 cluster hubs folded onto an 8 by 8 grid; one hub with the lanes of the six preceding hubs tapped once each; one multicast unrolled along the ring with a relay at the sixth hub.">
-  <figcaption>The physically constrained network of Section 6.8. A multicast from hub <em>s</em>
-  reaches the next six hubs; the sixth regenerates the data and re-sends it on its own lane.</figcaption>
+  <img src="fig-network.png" alt="Four panels: (a) the published Hummingbird organisation, one U-shaped waveguide tapped in each of eight clusters; (b) the modelled ring of 64 cluster hubs on an 8 by 8 grid; (c) one hub with the lanes of the six preceding hubs tapped once each; (d) one multicast unrolled along the ring with a relay at the sixth hub.">
+  <figcaption>Figure 9 of the paper. (a) The published Hummingbird organisation, schematically.
+  (b)-(d) The modelled extension of Section 6.8: a multicast from hub <em>s</em> reaches the next
+  six hubs, and the sixth regenerates the data and re-sends it on its own lane. These are
+  connectivity schematics, not layouts.</figcaption>
 </figure>
 
 <h2 id="quick-start">Quick start</h2>
@@ -129,7 +134,7 @@ log next to its CSV in <code>results/</code>.</p>
     <tr><td><code>python experiments.py sens</code></td><td><code>results/sens.csv</code>: sensitivity to reconfiguration time, bit rate, core throughput, flit serialisation</td><td>5 min</td></tr>
     <tr><td><code>python ring_size.py</code></td><td><code>results/ringsize.csv</code>: rings of 64, 256 and 1,000 cores</td><td>5 min</td></tr>
     <tr><td><code>python experiments.py dp</code></td><td><code>results/dp.csv</code>: exact optima the coordinate search is measured against</td><td>2-3 h</td></tr>
-    <tr><td><code>./run_hb.sh</code></td><td><code>results/hb_*.csv</code>: the Hummingbird-style network, and the lane-count, lane-rate and cluster-count studies</td><td>12 min</td></tr>
+    <tr><td><code>./run_hb.sh</code></td><td><code>results/hb_*.csv</code>: the Hummingbird-inspired network, and the lane-count, lane-rate and cluster-count studies</td><td>12 min</td></tr>
     <tr><td><code>python make_tables.py</code></td><td><code>paper/generated/*.tex</code> and <code>paper/figs/fig_*.pdf</code></td><td>20 s</td></tr>
   </tbody>
 </table>
@@ -178,19 +183,30 @@ from the data. Nothing is typed by hand.</p>
 <p>The main results are trace-driven. <code>traces/compute_traces.csv</code> holds per-core forward
 and backward kernel times measured on a C implementation with GSL and BLAS, for every network,
 period, batch size and core count, 100 to 300 repetitions each, compressed from 5.4 GB of logs.
-Forward kernel times are used unchanged; because the profiled backward kernel forms the weight
-gradient, the extra products of R and T are charged at the efficiency measured at the same
-per-core load. The sensitivity study replaces the traces by an analytical model over a sixteenfold
-range of core throughput and reaches the same conclusions.</p>
+Forward kernel times are used unchanged. The profiled backward kernel forms the weight gradient;
+the extra products of R and T are not profiled, so the whole traced backward time, call overhead
+included, is scaled by the ratio of modelled to profiled FLOPs. The sensitivity study replaces the
+traces by an overhead-free analytical model over a sixteenfold range of core throughput and shows
+the same pattern.</p>
 
 <h2>Parameters worth knowing</h2>
 <ul>
   <li><code>D_cfg</code>, the microring reconfiguration time per slot, is the least certain
   parameter: the base value is 10 ns and the paper sweeps it from 1 ns to 1 µs.</li>
-  <li>The 8 dB limit applies to the <em>splitting loss only</em>, which caps a transmission at six
-  receivers whatever the devices. The rest of the budget follows from the laser power and the
-  receiver sensitivity, −22.3 dBm OMA at 10 Gb/s scaled by 15 dB per decade of bit rate.</li>
+  <li>The 8 dB cap on the <em>splitting loss</em> allows at most six receivers per transmission.
+  It is a design choice, not a device limit: Hummingbird itself splits eightfold (9.0 dB).</li>
+  <li>The link budget follows from the power available just before the modulator (at most 8 dBm
+  per lane) and the receiver sensitivity, −22.3 dBm OMA at 10 Gb/s extrapolated by 15 dB per
+  decade of bit rate. Each lane's laser is set to the minimum power that closes the budget;
+  upstream laser coupling and distribution losses are excluded.</li>
 </ul>
+
+<h2 id="citation">Citation</h2>
+<p>Cite the software by its concept DOI, which always resolves to the newest release:
+<a href="https://doi.org/10.5281/zenodo.22904099">10.5281/zenodo.22904099</a>. Release v1.0.1, the
+version the paper was built from, is archived at
+<a href="https://doi.org/10.5281/zenodo.22909487">10.5281/zenodo.22909487</a>.
+<code>CITATION.cff</code> in the repository gives the full entry.</p>
 
 <footer>
   <p>Fei (Travis) Dai, Eastern Institute of Technology, Napier, New Zealand.

@@ -278,7 +278,7 @@ def solver_quality(d):
     have = os.path.exists(path)
     dp = pd.read_csv(path).set_index(["net", "mu", "lam", "bwd", "family"]) if have else None
     lines = [r"\begin{table}[t]", r"\centering",
-             r"\caption{Solver quality over 16 settings per network ($\mu\in\{1,8,16,32\}$, $\lmax\in\{8,64\}$, \Rc\ and \Tc). Gaps are relative to the exact FM optimum of the dynamic program (DP): rounded relaxed initialiser (RI) and coordinate search (CS); ``exact'' counts CS runs that reach the DP optimum.}",
+             r"\caption{Solver quality over 16 settings per network ($\mu\in\{1,8,16,32\}$, $\lmax\in\{8,64\}$, \Rc\ and \Tc). Gaps are relative to the exact FM optimum of the dynamic program (DP): rounded relaxed initializer (RI) and coordinate search (CS); ``exact'' counts CS runs that reach the DP optimum.}",
              r"\label{tab:solver}", r"\small", r"\setlength{\tabcolsep}{3pt}",
              r"\begin{tabular}{@{}lrrrrrr@{}}", r"\toprule",
              r" & \multicolumn{2}{c}{RI gap (\%)} & \multicolumn{2}{c}{CS gap (\%)} & CS & mean DP\\",
@@ -362,7 +362,7 @@ def fig_sens():
     h2, l2 = axes[2].get_legend_handles_labels()
     fig.legend(h + h2, l + l2, loc="upper center", ncol=8, frameon=False, fontsize=6.3,
                bbox_to_anchor=(0.5, 1.02), handlelength=2.2, columnspacing=1.0)
-    fig.tight_layout(rect=(0, 0, 1, 0.88), w_pad=0.6)
+    fig.tight_layout(rect=(0, 0, 1, 0.88), w_pad=1.6)
     fig.savefig(os.path.join(FIG, "fig_sens.pdf")); plt.close(fig)
     # macros
     r = s[s.bwd == "R"]
@@ -438,7 +438,7 @@ def enoc_table(d):
         return f"{b/1e9:.3g}"
 
     lines = [r"\begin{table*}[t]", r"\centering",
-             r"\caption{Analytical electrical-mesh reference ($25\times40$ mesh, XY routing, 2 cycles per hop, allocation re-optimised for the mesh). Break-even link bit rate $B_e^{*}$ (Gb/s per link and direction; T\,=\,Tb/s) at which the mesh matches the ONoC's selected iteration time with $\lmax=64$, under ideal tree multicast and under unicast replication; $\infty$ means the mesh cannot match it at any link rate. The last two columns give the ratio of mesh to ONoC time at a 128-bit-per-cycle link (435\,Gb/s), each network using its better collective. Rows show $\mu=1$ and 32; ranges quoted in the text include all four batch sizes.}",
+             r"\caption{Analytical electrical-mesh reference ($25\times40$ mesh, XY routing, 2 cycles per hop, allocation re-optimized for the mesh). Break-even link bit rate $B_e^{*}$ (Gb/s per link and direction; T\,=\,Tb/s) at which the mesh matches the ONoC's selected iteration time with $\lmax=64$, under ideal tree multicast and under unicast replication; $\infty$ means this reference cannot match it at any link rate. The last two columns give the ratio of mesh to ONoC time at a 128-bit-per-cycle link (435\,Gb/s), each network using its better collective. Rows show $\mu=1$ and 32; ranges quoted in the text include all four batch sizes.}",
              r"\label{tab:enoc}", r"\small", r"\setlength{\tabcolsep}{3.5pt}",
              r"\begin{tabular}{@{}lr rr rr rr rr@{}}", r"\toprule",
              r" & & \multicolumn{2}{c}{ONoC \Rc\ vs mesh \Rc} & \multicolumn{2}{c}{ONoC \Tc\ vs mesh \Tc} & \multicolumn{2}{c}{best vs best} & \multicolumn{2}{c}{$T_{\mathrm{mesh}}/T_{\mathrm{ONoC}}$ at 435\,Gb/s}\\",
@@ -518,7 +518,7 @@ def corollary(d):
         cfg = S.Cfg(mu=8, lam=lam, bwd="R")
         pred = math.sqrt(3 * 1000 * lam * cfg.B_lam / (4 * cfg.psi * cfg.C_F))
         mac(f"CorPred{name}", f"{pred:.0f}")
-        # relaxed (real-valued) estimate from the trace-calibrated initialiser, over mu
+        # relaxed (real-valued) estimate from the trace-calibrated initializer, over mu
         rr = sorted({round(json.loads(d[(d.family == "FM") & (d.method == "RI") & (d.net == "NN2") & (d.mu == mu) & (d.lam == lam) & (d.bwd == "R")].relaxed_real.iloc[0])[2]) for mu in MUS})
         mac(f"CorRelax{name}", f"{min(rr)}--{max(rr)}" if min(rr) != max(rr) else str(rr[0]))
 
@@ -766,10 +766,10 @@ def hb_tables():
     # table: mu = 8
     x = d[d.mu == 8].set_index(["net", "k", "bwd"])
     lines = [r"\begin{table}[t]", r"\centering",
-             r"\caption{Hummingbird-style network (64 clusters $\times$ 16 cores, FM, $\mu=8$, 40\,Gb/s lanes, $F=" + str(int(d.F.max())) + r"$): iteration time of the exact optimal allocation in $\mu$s with $k$ lanes per hub and direction, the largest increase over the same network without the fan-out limit, and the speed-up of \Tc\ over \Rc\ with one lane.}",
+             r"\caption{Hummingbird-inspired model (64 clusters $\times$ 16 cores, FM, $\mu=8$, 40\,Gb/s, $F=" + str(int(d.F.max())) + r"$): model-optimal iteration time in $\mu$s with $k$ lanes per hub and direction, largest increase over the ideal unlimited-reach reference, and \Tc/\Rc\ speed-up with one lane.}",
              r"\label{tab:hb}", r"\footnotesize", r"\setlength{\tabcolsep}{3.5pt}",
              r"\begin{tabular}{@{}lrrrrrr@{}}", r"\toprule",
-             r" & \multicolumn{2}{c}{$k=1$} & \multicolumn{2}{c}{$k=4$} & Limit & \Tc\ vs \Rc\\",
+             r" & \multicolumn{2}{c}{$k=1$} & \multicolumn{2}{c}{$k=4$} & Relay & \Tc\ vs \Rc\\",
              r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}",
              r"Net & \Rc & \Tc & \Rc & \Tc & cost (\%) & ($k=1$)\\", r"\midrule"]
     for net in NETS:
@@ -855,10 +855,10 @@ def hb_tables():
 def write_highlights():
     hl = [
         "Ownership-based model of FCNN training on a wavelength-slotted optical ring",
-        "Hummingbird-style optical broadcast keeps every split within 8 dB via relays",
+        "Hummingbird-inspired relays keep every modeled split within 8 dB",
         "Exact dynamic program for fixed and round-robin mappings validates the search",
-        f"Transpose-broadcast backpropagation is {macros['TRspeedMin']}-{macros['TRspeedMax']}x faster than error reduction",
-        "Optical advantage over a wide-link mesh hinges on the backward collective",
+        f"Transpose broadcast is {macros['TRspeedMin']}-{macros['TRspeedMax']}x faster than reduction on the logical ring",
+        "Logical-ring advantage over an analytical mesh hinges on the backward collective",
     ]
     for h in hl:
         assert len(h) <= 85, (len(h), h)

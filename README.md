@@ -11,8 +11,8 @@ every number quoted in the text. There are no hand-typed results.
 The study asks two questions. How many cores should each layer of a fully connected network own
 on a wavelength-slotted optical ring, and which backward collective should be used: reduce the
 partial errors (**R**), or replicate the transposed weights and broadcast (**T**)? Section 6.8
-then rebuilds the network on a physically constrained, Hummingbird-style organisation in which
-every optical transmission stays within an 8 dB power split.
+then evaluates a Hummingbird-inspired clustered organisation in which every modelled optical
+transmission stays within an 8 dB splitting cap.
 
 ## Quick start
 
@@ -56,7 +56,9 @@ Training one mini-batch iteration of a fully connected network on that ring mean
 Section 6.8 replaces the shared, tunably split ring by single-writer *lanes*: each cluster hub
 owns lanes that are tapped by the next six clusters, and every sixth cluster regenerates the
 data and forwards it on its own lanes. That keeps each split at 7.8 dB and each link budget
-closed at 40 Gb/s, which the shared-ring model does not.
+closed at 40 Gb/s, which the shared-ring model does not. These are model results: receiver
+sensitivity is extrapolated from one measured receiver, upstream laser coupling loss is excluded
+and relays are assumed to pipeline perfectly (Section 7 of the paper lists the assumptions).
 
 ## Repository layout
 
@@ -65,7 +67,7 @@ closed at 40 Gb/s, which the shared-ring model does not.
 | `onocsim.py` | Schedule-level simulator (numba). Ownership, computation, slot service, energy, SRAM liveness, relaxed initialiser, exact chain DP, coordinate search, analytical mesh bound. |
 | `refmodel.py` | Independent, slow, dictionary-based implementation of the same equations. Shares no code with `onocsim.py`; used only for cross-checking. |
 | `physhb.py` | Physical layer of Section 3.6: loss of one transmission to `F` receivers, the 8 dB splitting limit, the rate-dependent link budget, WDM crosstalk. |
-| `hbsim.py` | Hummingbird-style clustered network of Section 6.8: hubs, dedicated lanes, fixed taps, relays, cluster fabric, laser power from the link budget. |
+| `hbsim.py` | Hummingbird-inspired clustered network of Section 6.8: hubs, dedicated lanes, fixed taps, relays, cluster fabric, laser power from the link budget. |
 | `hbref.py` | Independent reference for one transition of that network, including the relay chains. |
 | `experiments.py`, `ring_size.py` | Main experiment matrix; ring-size study. Write `results/*.csv`. |
 | `hb_experiments.py`, `run_hb.sh` | Section 6.8 experiments: `main`, `lanes`, `rate`, `clusters`, `dcfg`. Write `results/hb_*.csv`. |
@@ -86,7 +88,7 @@ Times are for two cores of an Intel Core i5 3200 host with 32 GB of memory.
 | `python experiments.py sens` | `results/sens.csv`: sensitivity to reconfiguration time, bit rate, core throughput and flit serialisation | ~5 min |
 | `python ring_size.py` | `results/ringsize.csv`: rings of 64, 256 and 1,000 cores | ~5 min |
 | `python experiments.py dp` | `results/dp.csv`: exact optima that the coordinate search is measured against | 2-3 h |
-| `./run_hb.sh` | `results/hb_*.csv`: the Hummingbird-style network, lane-count, lane-rate and cluster-count studies | ~12 min |
+| `./run_hb.sh` | `results/hb_*.csv`: the Hummingbird-inspired network, lane-count, lane-rate and cluster-count studies | ~12 min |
 | `python make_tables.py` | `paper/generated/*.tex`, `paper/figs/fig_*.pdf` | ~20 s |
 
 `run_all.sh` runs the first five in order. Each experiment writes its log to `results/`.
@@ -95,8 +97,9 @@ Times are for two cores of an Intel Core i5 3200 host with 32 GB of memory.
 `paper/generated/`, and the figures into `paper/figs/`. The manuscript source is not part of this
 repository while the paper is under review.
 
-Figure 9 is drawn in TikZ; rebuild it with `pdflatex figs/src/hb_network.tex` and copy the PDF
-into `paper/figs/`.
+Figure 9 is drawn in TikZ. Panel (a) is a schematic of the published Hummingbird organisation;
+panels (b)-(d) show the modelled extension. Rebuild it with
+`pdflatex paper/figs/src/hb_network.tex` and copy the PDF into `paper/figs/`.
 
 ## How the results reach the paper
 
@@ -134,10 +137,10 @@ written in the source as macros and cannot drift from the data.
 
 The main results are trace-driven: `Model(n, cfg, trace_net="NN2")` reads
 `traces/compute_traces.csv` and builds per-load times. Forward kernel times are used unchanged.
-The profiled backward kernel forms the weight gradient, so the extra products of R and T are
-charged at the efficiency measured at the same per-core load. The sensitivity study uses an
-analytical FLOP model instead, over a sixteenfold range of core throughput, and reaches the same
-conclusions.
+The profiled backward kernel forms the weight gradient; the extra products of R and T are not
+profiled, so the whole traced backward time, call overhead included, is scaled by the ratio of
+modelled to profiled FLOPs. The sensitivity study uses an overhead-free analytical model instead,
+over a sixteenfold range of core throughput, and shows the same pattern.
 
 To regenerate the trace CSV from the raw profiler logs, run
 `python parse_traces.py "trace NN1-3.zip" ...`. Four NN6 log files are named B34, B52, B36 and
@@ -148,10 +151,14 @@ B72 but contain batch-32 runs; the parser corrects them.
 * `D_cfg`, the microring reconfiguration time per slot, is the least certain parameter. The base
   value is 10 ns and the paper sweeps it from 1 ns to 1 µs.
 * `P_laser = 0.645 mW` is the optical launch power per active wavelength.
-* The physical layer of Section 3.6 applies the 8 dB limit to the **splitting loss only**, which
-  caps a transmission at six receivers whatever the devices. The total budget then follows from
-  the laser power and the receiver sensitivity: `-22.3 dBm` OMA at 10 Gb/s, scaled by 15 dB per
-  decade of bit rate.
+* The physical layer of Section 3.6 caps the **splitting loss** at 8 dB, which allows at most six
+  receivers per transmission. The cap is a design choice, not a device limit: Hummingbird itself
+  splits eightfold (9.0 dB).
+* The link budget follows from the power available just before the modulator (at most 8 dBm per
+  lane) and the receiver sensitivity: `-22.3 dBm` OMA at 10 Gb/s, extrapolated by 15 dB per
+  decade of bit rate. Each lane's laser is then set to the minimum power that closes the budget.
+  Upstream laser coupling and distribution losses are excluded from both the budget and the laser
+  energy.
 
 ## Citation
 

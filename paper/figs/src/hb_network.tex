@@ -1,4 +1,6 @@
-% Figure for Section 6.8: Hummingbird-style clustered network.
+% Figure for Section 6.8: published Hummingbird organization and modeled extension.
+% Panel (a) is an original connectivity schematic, based on Maurice Steinman,
+% Hot Chips 35 (2023), slides 12 and 14. It is not a reproduced image or floorplan.
 % Build: pdflatex hb_network.tex, then copy hb_network.pdf to ../hb_network.pdf
 \documentclass[border=1pt]{standalone}
 \usepackage[T1]{fontenc}
@@ -18,7 +20,41 @@
   pl/.style={font=\sffamily\fontsize{7}{8}\selectfont\bfseries, anchor=south west, inner sep=0pt},
   >={Stealth[length=1.5mm,width=1.1mm]}]
 
-% ================================================================== (a) the ring on the die
+% ================================================================== (a) published Hummingbird
+% Show one of the 64 dedicated waveguides. It has one receive tap in every
+% cluster, including the source's cluster: 64 transmitters x 8 receivers = 512.
+\node[pl] at (-0.18,3.02) {(a)};
+\node[lbl, anchor=west] at (0.20,3.09)
+  {Hummingbird: 8 clusters $\times$ 8 cores; one of 64 dedicated 1\,Gb/s lanes};
+\foreach \j in {0,...,3}{
+  \pgfmathsetmacro{\x}{0.95+1.9*\j}
+  \pgfmathtruncatemacro{\c}{7-\j}
+  \node[draw=inkgrey, fill=inkgrey!6, line width=0.3pt,
+        minimum width=12mm, minimum height=3.5mm, font=\lb] at (\x,2.64) {cluster \j};
+  \node[draw=inkgrey, fill=inkgrey!6, line width=0.3pt,
+        minimum width=12mm, minimum height=3.5mm, font=\lb] at (\x,1.43) {cluster \c};
+  \draw[inkgrey, dash pattern=on 0.7pt off 0.7pt, line width=0.3pt] (\x,2.465) -- (\x,2.27);
+  \draw[inkgrey, dash pattern=on 0.7pt off 0.7pt, line width=0.3pt] (\x,1.605) -- (\x,1.80);
+  \fill[inkgrey] ({\x-0.045},2.225) rectangle ++(0.09,0.09);
+  \fill[inkgrey] ({\x-0.045},1.755) rectangle ++(0.09,0.09);
+  \draw[laneA, line width=0.4pt] (\x,2.19) -- (\x,2.27);
+  \draw[laneA, line width=0.4pt] (\x,1.88) -- (\x,1.80);
+}
+% U-shaped single-writer guide; fixed taps couple light to cluster receivers.
+\draw[laneA, line width=0.8pt, ->]
+  (0.18,2.19) -- (7.35,2.19) arc[start angle=90,end angle=-90,radius=0.155]
+  -- (0.18,1.88);
+\foreach \j in {0,...,3}{
+  \pgfmathsetmacro{\x}{0.95+1.9*\j}
+  \node[tap=laneA] at (\x,2.19) {};
+  \node[tap=laneA] at (\x,1.88) {};
+}
+\draw[laneA, line width=0.5pt] (0.18,2.30) circle (0.08);
+\node[lbl, anchor=east, text=laneA] at (0.06,2.30) {Tx};
+\node[lbl, anchor=center] at (4.05,0.98)
+  {cores on electronic die; TSVs dashed; receivers and U-shaped guide on photonic die};
+
+% ================================================================== (b) modeled ring on the die
 % A crossing-free ring through all 64 hubs of an 8x8 grid, every hop one pitch:
 % along the top row, snaking through columns 1-7, and back up column 0.
 \def\p{0.33}      % grid pitch in cm (2.5 mm on chip)
@@ -48,11 +84,11 @@
 \node[lbl, below=0.9mm of g9, fill=white, inner sep=0.3pt] {$s{+}6$};
 \draw[inkgrey, line width=0.3pt] ($(g0)+(-0.18,0.3)$) rectangle ($(g0)+({7*\p+0.18},{-7*\p-0.18})$);
 \node[lbl, anchor=north, align=center] at ($(g0)+({3.5*\p},{-7*\p-0.2})$) {ring of 64 hubs,\\2.5\,mm pitch, 20\,mm die};
-\node[pl] at ($(g0)+(-0.18,0.4)$) {(a)};
+\node[pl] at ($(g0)+(-0.18,0.4)$) {(b)};
 
-% ================================================================== (b) one hub, one direction
+% ================================================================== (c) modeled hub, one direction
 \begin{scope}[xshift=3.25cm, yshift=0.3cm]
-  \node[pl] at (0,0.1) {(b)};
+  \node[pl] at (0,0.1) {(c)};
   % cluster above the hub
   \draw[inkgrey, fill=inkgrey!6, line width=0.3pt] (0.6,0) rectangle (4.75,-0.45);
   \node[lbl, align=center] at (2.675,-0.225) {cluster $h$: 16 cores + broadcast fabric};
@@ -88,10 +124,10 @@
   \node[lbl, anchor=west] at (2.05,\y) {6th tap: lane ends};
 \end{scope}
 
-% ================================================================== (c) one multicast, unrolled
+% ================================================================== (d) modeled multicast, unrolled
 \begin{scope}[yshift=-3.85cm]
   \def\d{0.672}
-  \node[pl] at (-0.3,0.55) {(c)};
+  \node[pl] at (-0.3,0.55) {(d)};
   \foreach \j in {0,...,12}{
     \node[hub, minimum width=5.4mm, minimum height=2.8mm] (h\j) at ({\j*\d},0) {};
   }
